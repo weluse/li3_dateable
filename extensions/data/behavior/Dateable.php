@@ -53,7 +53,8 @@ class Dateable extends \lithium\core\StaticObject {
 		
 		//Updated Filter setzen
 		if($config['updated']['auto']) {
-			$class::applyFilter('update', function($self, $params, $chain) use ($class) {
+			$class::applyFilter('save', function($self, $params, $chain) use ($class) {
+				\lithium\analysis\Logger::write('info', 'li3_dateable: Invoke methode save');
 				$params = Dateable::invokeMethod('_formatUpdated', array(
 					$class, $params
 				));
@@ -64,6 +65,7 @@ class Dateable extends \lithium\core\StaticObject {
 		//Created filter setzen
 		if($config['created']['auto']) {
 			$class::applyFilter('create', function($self, $params, $chain) use ($class) {
+				\lithium\analysis\Logger::write('info', 'li3_dateable: Invoke methode create');
 				$params = Dateable::invokeMethod('_formatCreated', array(
 					$class, $params
 				));				
@@ -120,9 +122,14 @@ class Dateable extends \lithium\core\StaticObject {
 		$config = static::$_configurations[$class];
 		$config = $config['updated'];
 		
-		$datetime = date($config['format']);
-		$options['data'][$config['field']] = $datetime;
-
+		$entity = $options['entity'];
+		
+		//only if Entity exists
+		if($entity->exists()) {
+			$datetime = date($config['format']);
+			$options['data'][$config['field']] = $datetime;
+		}
+		
 		return $options;
 	}
 	
