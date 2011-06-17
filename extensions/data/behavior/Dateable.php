@@ -34,8 +34,8 @@ class Dateable extends \lithium\core\StaticObject {
 		
 		$defaults = array(
 			'autoIndex' => true,
-			'updated' => array('field' => 'updated', 'format' => 'Y-m-d h:i:s', 'auto' => true),
-			'created' => array('field' => 'created', 'format' => 'Y-m-d h:i:s', 'auto' => true)
+			'updated' => array('field' => 'updated', 'format' => \DateTime::ISO8601, 'auto' => true),
+			'created' => array('field' => 'created', 'format' => \DateTime::ISO8601, 'auto' => true)
 		);
 		$config += $defaults;
 		
