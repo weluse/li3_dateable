@@ -86,9 +86,7 @@ class Dateable extends \lithium\core\StaticObject {
 	 * @param array $options
 	 */
 	public static function index($class, array $keys, array $options = array()) {
-		
-		return false; 
-		
+			
 		$defaults = array('include' => array(), 'background' => true);
 		$options += $defaults;
 
@@ -97,14 +95,15 @@ class Dateable extends \lithium\core\StaticObject {
 
 		list($updated, $created) = $keys;
 		
-		$base = 'updated';
-
+		$updated = is_string($updated) ? array($updated => 1) : $updated;
+		$created = is_string($created) ? array($created => 1) : $created;
+		
 		if (!$database || !$updated || !$created) {
 			return false;
 		}
 	
 		if (is_a($database, 'lithium\data\source\MongoDb')) {
-			$index = array($base => '2d') + $options['include'];
+			$index = array('name' => 'li3_dateable') + $options['include'] + $updated + $created;
 			$collection = $meta['source'];
 			unset($options['include']);
 			$database->connection->{$collection}->ensureIndex($index, $options);
