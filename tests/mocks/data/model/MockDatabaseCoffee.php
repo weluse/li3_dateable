@@ -9,16 +9,16 @@
 namespace li3_dateable\tests\mocks\data\model;
 
 class MockDatabaseCoffee extends \li3_behaviors\extensions\Model {
-	
+
 	protected $_actsAs = array("dateable" => array(
 		'updated' => array('field' => 'updated', 'format' => 's', 'auto' => true),
-		'created' => array('field' => 'created', 'format' => 's', 'auto' => true),
+		'created' => array('field' => 'created', 'format' => 's', 'auto' => true)
 	));
-	
+
 	protected $_meta = array(
 		'connection' => 'mock-database-connection'
 	);
-	
+
 	//protected $_meta = array('connection' => 'mock-source');
 
 	protected $_schema = array(
@@ -28,15 +28,15 @@ class MockDatabaseCoffee extends \li3_behaviors\extensions\Model {
 		//'created' => array('type' => 'datetime'),
 		//'updated' => array('type' => 'datetime')
 	);
-	
+
 	public function getBehaviors(){
 		return $this->_actsAs;
 	}
-	
+
 	public static function getFilters(){
 		return static::$_methodFilters;
 	}
-	
+
 	//copied methods
 	public static $connection = null;
 
@@ -58,7 +58,6 @@ class MockDatabaseCoffee extends \li3_behaviors\extensions\Model {
 		}
 		return parent::connection();
 	}
-	
 }
 
 ?>

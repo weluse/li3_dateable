@@ -23,36 +23,35 @@ class Dateable extends \lithium\core\StaticObject {
 	 */
 	protected static $_configurations = array();
 
-	
 	/**
-	 * Wird benoetigt um ein Model an den Behavior zu binden.
+	 * Beahvior init setup
 	 *
 	 * @param object $class
 	 * @param array	$config
 	 */
 	public static function bind($class, array $config = array()) {
-		
+
 		$defaults = array(
 			'autoIndex' => true,
 			'updated' => array('field' => 'updated', 'format' => \DateTime::ISO8601, 'auto' => true),
 			'created' => array('field' => 'created', 'format' => \DateTime::ISO8601, 'auto' => true)
 		);
 		$config += $defaults;
-		
+
 		$updated = $config['updated'];
 		$created = $config['created'];
-		
+
 		//Index for MongoDB
 		if ($config['autoIndex']) {
 			static::index(
-				$class, 
+				$class,
 				array($config['updated']['field'], $config['created']['field']),
 				array()
 			);
 		}
-		
-		//Updated Filter setzen
-		if($config['updated']['auto']) {
+
+		//set updated filter
+		if ($config['updated']['auto']) {
 			$class::applyFilter('save', function($self, $params, $chain) use ($class) {
 				\lithium\analysis\Logger::write('info', 'li3_dateable: Invoke methode save');
 				$params = Dateable::invokeMethod('_formatUpdated', array(
@@ -61,25 +60,25 @@ class Dateable extends \lithium\core\StaticObject {
 				return $chain->next($self, $params, $chain);
 			});
 		}
-		
-		//Created filter setzen
-		if($config['created']['auto']) {
+
+		//set created filter
+		if ($config['created']['auto']) {
 			$class::applyFilter('create', function($self, $params, $chain) use ($class) {
-				\lithium\analysis\Logger::write('info', 'li3_dateable: Invoke methode create');
+				//\lithium\analysis\Logger::write('info', 'li3_dateable: Invoke methode create');
 				$params = Dateable::invokeMethod('_formatCreated', array(
 					$class, $params
-				));				
+				));
 				return $chain->next($self, $params, $chain);
 			});
 		}
-		
-		return static::$_configurations[$class] = $config;		
+
+		return static::$_configurations[$class] = $config;
 	}
-	
+
 	/**
 	 * AutoIndex for MongoDB
 	 *
-	 * @todo implementieren
+	 * @todo not yet finished
 	 * @see li3_geo\extensions\data\behavior\Locatable
 	 * @param object $class
 	 * @param array $keys
@@ -109,18 +108,17 @@ class Dateable extends \lithium\core\StaticObject {
 			$database->connection->{$collection}->ensureIndex($index, $options);
 		}
 	}
-	
-	
+
 	/**
 	 * Formatiert die Datenstruktur für den Update
-	 * 
+	 *
 	 * @param string|object $class
 	 * @param array $options
 	 */
-	protected static function _formatUpdated($class, $options) {	
+	protected static function _formatUpdated($class, $options) {
 		$config = static::$_configurations[$class];
 		$config = $config['updated'];
-		
+
 		$entity = $options['entity'];
 		
 		//only if Entity exists
@@ -128,30 +126,25 @@ class Dateable extends \lithium\core\StaticObject {
 			$datetime = date($config['format']);
 			$options['data'][$config['field']] = $datetime;
 		}
-		
+
 		return $options;
 	}
-	
+
 	/**
 	 * Formatiert die Datenstruktur für Created
 	 *
 	 * @param string|object $class
 	 * @param array $options
 	 */
-	protected static function _formatCreated($class, $options) {	
+	protected static function _formatCreated($class, $options) {
 		$staticConfig = static::$_configurations[$class];
 		$config = $staticConfig['created'];
-		
 		$time = time();
 		$datetime = date($config['format'],$time);
 		$options['data'][$config['field']] = $datetime;
-		
-		
-		$config = $staticConfig['updated'];		
+		$config = $staticConfig['updated'];
 		$datetime = date($config['format'],$time);
-		$options['data'][$config['field']] = $datetime;	
-		
-		
+		$options['data'][$config['field']] = $datetime;
 		return $options;
 	}
 
