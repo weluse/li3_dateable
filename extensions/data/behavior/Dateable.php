@@ -53,7 +53,6 @@ class Dateable extends \lithium\core\StaticObject {
 		//set updated filter
 		if ($config['updated']['auto']) {
 			$class::applyFilter('save', function($self, $params, $chain) use ($class) {
-				\lithium\analysis\Logger::write('info', 'li3_dateable: Invoke methode save');
 				$params = Dateable::invokeMethod('_formatUpdated', array(
 					$class, $params
 				));
@@ -64,7 +63,6 @@ class Dateable extends \lithium\core\StaticObject {
 		//set created filter
 		if ($config['created']['auto']) {
 			$class::applyFilter('create', function($self, $params, $chain) use ($class) {
-				//\lithium\analysis\Logger::write('info', 'li3_dateable: Invoke methode create');
 				$params = Dateable::invokeMethod('_formatCreated', array(
 					$class, $params
 				));
