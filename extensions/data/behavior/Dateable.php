@@ -24,7 +24,7 @@ class Dateable extends \lithium\core\StaticObject {
 	protected static $_configurations = array();
 
 	/**
-	 * Beahvior init setup
+	 * Behavior init setup
 	 *
 	 * @param object $class
 	 * @param array	$config
@@ -108,7 +108,6 @@ class Dateable extends \lithium\core\StaticObject {
 	}
 
 	/**
-	 * Formatiert die Datenstruktur für den Update
 	 *
 	 * @param string|object $class
 	 * @param array $options
@@ -129,7 +128,6 @@ class Dateable extends \lithium\core\StaticObject {
 	}
 
 	/**
-	 * Formatiert die Datenstruktur für Created
 	 *
 	 * @param string|object $class
 	 * @param array $options
