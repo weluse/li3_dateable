@@ -22,6 +22,21 @@ class Dateable extends \lithium\core\StaticObject {
 	 * @var array
 	 */
 	protected static $_configurations = array();
+	
+	protected static $_defaults_key = 'standard';
+	
+	protected static $_defaults = array(
+		'standard' => array (
+			'autoIndex' => true,
+			'updated' => array('field' => 'updated', 'format' => \DateTime::ISO8601, 'auto' => true),
+			'created' => array('field' => 'created', 'format' => \DateTime::ISO8601, 'auto' => true)
+		),
+		'mongoDb' => array (
+			'autoIndex' => true,
+			'updated' => array('field' => 'updated', 'auto' => true),
+			'created' => array('field' => 'created', 'auto' => true)
+		)
+	);
 
 	/**
 	 * Behavior init setup
@@ -30,12 +45,15 @@ class Dateable extends \lithium\core\StaticObject {
 	 * @param array	$config
 	 */
 	public static function bind($class, array $config = array()) {
-
-		$defaults = array(
-			'autoIndex' => true,
-			'updated' => array('field' => 'updated', 'format' => \DateTime::ISO8601, 'auto' => true),
-			'created' => array('field' => 'created', 'format' => \DateTime::ISO8601, 'auto' => true)
-		);
+		//get mongoDb settings if available
+		$connection = $class::meta('connection');
+		//@todo rewrite to is_a and reduce code duplication from ensure index
+		$adapter = \lithium\data\Connections::adapter($connection);
+		if ($adapter instanceof \lithium\data\source\MongoDb) {
+			static::$_defaults_key = 'mongoDb';
+		}
+		
+		$defaults = static::$_defaults[static::$_defaults_key];
 		$config += $defaults;
 
 		$updated = $config['updated'];
@@ -120,7 +138,12 @@ class Dateable extends \lithium\core\StaticObject {
 		
 		//only if Entity exists
 		if($entity->exists()) {
-			$datetime = date($config['format']);
+			if (static::$_defaults_key == 'mongoDb') {
+				$datetime = new \MongoDate();
+			}
+			else {
+				$datetime = date($config['format']);
+			}
 			$options['data'][$config['field']] = $datetime;
 		}
 
@@ -134,13 +157,21 @@ class Dateable extends \lithium\core\StaticObject {
 	 */
 	protected static function _formatCreated($class, $options) {
 		$staticConfig = static::$_configurations[$class];
-		$config = $staticConfig['created'];
-		$time = time();
-		$datetime = date($config['format'],$time);
-		$options['data'][$config['field']] = $datetime;
-		$config = $staticConfig['updated'];
-		$datetime = date($config['format'],$time);
-		$options['data'][$config['field']] = $datetime;
+		if (static::$_defaults_key == 'mongoDb') {
+			$datetime = new \MongoDate();
+			$config = $staticConfig['created'];
+			$options['data'][$config['field']] = $datetime;
+			$config = $staticConfig['updated'];
+			$options['data'][$config['field']] = $datetime;
+		} else {
+			$time = time();
+			$config = $staticConfig['created'];
+			$datetime = date($config['format'],$time);
+			$options['data'][$config['field']] = $datetime;
+			$config = $staticConfig['updated'];
+			$datetime = date($config['format'],$time);
+			$options['data'][$config['field']] = $datetime;
+		}
 		return $options;
 	}
 
