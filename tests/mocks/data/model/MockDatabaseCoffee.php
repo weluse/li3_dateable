@@ -19,14 +19,10 @@ class MockDatabaseCoffee extends \li3_behaviors\extensions\Model {
 		'connection' => 'mock-database-connection'
 	);
 
-	//protected $_meta = array('connection' => 'mock-source');
-
 	protected $_schema = array(
 		'id' => array('type' => 'integer'),
 		'author_id' => array('type' => 'integer'),
 		'title' => array('type' => 'string'),
-		//'created' => array('type' => 'datetime'),
-		//'updated' => array('type' => 'datetime')
 	);
 
 	public function getBehaviors(){
