@@ -46,20 +46,15 @@ class DateableTest extends \lithium\test\Unit {
 	}
 
 	public function testUpdated() {
-		$model = MockDatabaseCoffee::create(array('id'=>13));
-
-		MockDatabaseCoffee::applyFilter('update', function($self, $params, $chain) {
-			$val = $chain->next($self, $params, $chain);
-			return $params['data'];
-		});
+		$model = MockDatabaseCoffee::create(array('id'=>13,'title' => 'foo'));
+		$model->save();
+		$old_data = $model->data();
 		sleep(1);
-		$newData = MockDatabaseCoffee::update(array('id'=>12));
+		$model->save(array('title' => 'bar'));
 
-		$oldData = $model->data();
+		$new_data = $model->data();
 
-		$changes = array_diff_assoc($newData, $model->data());
-
-		$this->assertTrue(isset($changes['updated']));
+		$this->assertTrue($old_data['updated'] != $new_data['updated']);
 	}
 }
 

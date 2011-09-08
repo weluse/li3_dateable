@@ -11,7 +11,7 @@ namespace li3_dateable\extensions\data\behavior;
 use lithium\data\Connections;
 
 /**
- * 
+ *
  */
 class Dateable extends \lithium\core\StaticObject {
 
@@ -101,7 +101,7 @@ class Dateable extends \lithium\core\StaticObject {
 	 * @param array $options
 	 */
 	public static function index($class, array $keys, array $options = array()) {
-			
+
 		$defaults = array('include' => array(), 'background' => true);
 		$options += $defaults;
 
@@ -109,14 +109,14 @@ class Dateable extends \lithium\core\StaticObject {
 		$database = Connections::get($meta['connection']);
 
 		list($updated, $created) = $keys;
-		
+
 		$updated = is_string($updated) ? array($updated => 1) : $updated;
 		$created = is_string($created) ? array($created => 1) : $created;
-		
+
 		if (!$database || !$updated || !$created) {
 			return false;
 		}
-	
+
 		if (is_a($database, 'lithium\data\source\MongoDb')) {
 			$index = array('name' => 'li3_dateable') + $options['include'] + $updated + $created;
 			$collection = $meta['source'];
@@ -135,7 +135,6 @@ class Dateable extends \lithium\core\StaticObject {
 		$config = $config['updated'];
 
 		$entity = $options['entity'];
-		
 		//only if Entity exists
 		if($entity->exists()) {
 			if (static::$_defaults_key == 'mongoDb') {
