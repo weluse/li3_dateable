@@ -33,7 +33,11 @@ class Dateable extends \lithium\core\StaticObject {
 
 		$defaults = array(
 			'autoIndex' => true,
-			'updated' => array('field' => 'updated', 'format' => \DateTime::ISO8601, 'auto' => true),
+			'updated' => array(
+				'field' => 'updated',
+				'format' => \DateTime::ISO8601,
+				'auto' => true
+			),
 			'created' => array('field' => 'created', 'format' => \DateTime::ISO8601, 'auto' => true)
 		);
 		$config += $defaults;
@@ -119,7 +123,7 @@ class Dateable extends \lithium\core\StaticObject {
 
 		$entity = $options['entity'];
 		//only if Entity exists
-		if($entity->exists()) {
+		if ($entity->exists()) {
 			$datetime = date($config['format']);
 			$options['data'][$config['field']] = $datetime;
 		}
