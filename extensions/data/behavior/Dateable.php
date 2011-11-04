@@ -22,13 +22,17 @@ class Dateable extends \lithium\core\StaticObject {
 	 * @var array
 	 */
 	protected static $_configurations = array();
-	
+
 	protected static $_defaults_key = 'standard';
-	
+
 	protected static $_defaults = array(
 		'standard' => array (
 			'autoIndex' => true,
-			'updated' => array('field' => 'updated', 'format' => \DateTime::ISO8601, 'auto' => true),
+			'updated' => array(
+				'field' => 'updated',
+				'format' => \DateTime::ISO8601,
+				'auto' => true
+			),
 			'created' => array('field' => 'created', 'format' => \DateTime::ISO8601, 'auto' => true)
 		),
 		'mongoDb' => array (
@@ -52,7 +56,7 @@ class Dateable extends \lithium\core\StaticObject {
 		if ($adapter instanceof \lithium\data\source\MongoDb) {
 			static::$_defaults_key = 'mongoDb';
 		}
-		
+
 		$defaults = static::$_defaults[static::$_defaults_key];
 		$config += $defaults;
 
@@ -136,7 +140,7 @@ class Dateable extends \lithium\core\StaticObject {
 
 		$entity = $options['entity'];
 		//only if Entity exists
-		if($entity->exists()) {
+		if ($entity->exists()) {
 			if (static::$_defaults_key == 'mongoDb') {
 				$datetime = new \MongoDate();
 			}
