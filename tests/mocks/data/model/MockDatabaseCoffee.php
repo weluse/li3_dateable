@@ -22,7 +22,7 @@ class MockDatabaseCoffee extends \li3_behaviors\extensions\Model {
 	protected $_schema = array(
 		'id' => array('type' => 'integer'),
 		'author_id' => array('type' => 'integer'),
-		'title' => array('type' => 'string'),
+		'title' => array('type' => 'string')
 	);
 
 	public function getBehaviors(){
